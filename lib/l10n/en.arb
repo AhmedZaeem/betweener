@@ -1,0 +1,10 @@
+{
+ "@@locale": "en",
+ "getStarted" : "Get Started",
+ "password" : "Password",
+ "email" : "Email",
+ "login" : "login",
+ "register" : "register",
+ "signInWithGoogle" : "sing in with google",
+ "name" : "Name"
+ }
