@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../Controllers/FollowersController.dart';
 import '../Controllers/SearchController.dart';
-import '../Models/Followers.dart';
 import '../Models/UserModel.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -25,15 +22,15 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<User> users = [];
-  Future<Followers>? myFollowers;
+  Future<List<int>>? myFollowers;
   @override
   void dispose() {
     super.dispose();
     _searchController.dispose();
   }
 
-  Future<Followers> getMyFollowers() async {
-    return await getFollowers();
+  Future<List<int>> getMyFollowers() async {
+    return await fetchIdsFromAPI();
   }
 
   @override
@@ -75,15 +72,15 @@ class _SearchScreenState extends State<SearchScreen> {
                               label: TextButton(
                                 onPressed: () async {
                                   await followSomeone(users[index].id!)
-                                      .then((value) {
+                                      .then((value) async {
                                     if (value) {
-                                      print('followed');
+                                      await refresh();
                                     }
                                   });
+                                  setState(() {});
                                 },
                                 child: Text(
-                                  followings.data!.following!
-                                          .contains(jsonEncode(users[index]))
+                                  followings.data!.contains(users[index].id)
                                       ? 'Following'
                                       : 'Follow',
                                   style: const TextStyle(
@@ -108,5 +105,11 @@ class _SearchScreenState extends State<SearchScreen> {
         future: myFollowers,
       ),
     );
+  }
+
+  Future<void> refresh() async {
+    myFollowers = getMyFollowers();
+    users = await getSearchData(_searchController.text);
+    setState(() {});
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:betweener/enums.dart';
 import 'package:betweener/main.dart';
 import 'package:http/http.dart' as http;
@@ -25,4 +27,18 @@ Future<bool> followSomeone(int followeeId) async {
     return true;
   }
   return false;
+}
+
+Future<List<int>> fetchIdsFromAPI() async {
+  final token = CachedController().getData(sharedPrefKeys.token);
+  final response = await http.get(Uri.parse('$apiLink/follow'),
+      headers: {'Authorization': 'Bearer $token'});
+  if (response.statusCode == 200) {
+    final jsonResponse = json.decode(response.body);
+    List<dynamic> following = jsonResponse["following"];
+    List<int> ids = following.map((item) => item["id"] as int).toList();
+    return ids;
+  } else {
+    throw Exception('Failed to load data');
+  }
 }
