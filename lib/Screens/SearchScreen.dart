@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -71,10 +73,17 @@ class _SearchScreenState extends State<SearchScreen> {
                               backgroundColor:
                                   Theme.of(context).colorScheme.primary,
                               label: TextButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  await followSomeone(users[index].id!)
+                                      .then((value) {
+                                    if (value) {
+                                      print('followed');
+                                    }
+                                  });
+                                },
                                 child: Text(
                                   followings.data!.following!
-                                          .contains(users[index])
+                                          .contains(jsonEncode(users[index]))
                                       ? 'Following'
                                       : 'Follow',
                                   style: const TextStyle(

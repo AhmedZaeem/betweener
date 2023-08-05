@@ -13,3 +13,16 @@ Future<Followers> getFollowers() async {
   );
   return followersFromJson(res.body);
 }
+
+Future<bool> followSomeone(int followeeId) async {
+  final token = CachedController().getData(sharedPrefKeys.token);
+  final res = await http.post(
+    Uri.parse('$apiLink/follow'),
+    body: {'followee_id': '$followeeId'},
+    headers: {'Authorization': 'Bearer $token'},
+  );
+  if (res.statusCode == 200) {
+    return true;
+  }
+  return false;
+}
