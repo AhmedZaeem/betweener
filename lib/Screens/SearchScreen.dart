@@ -84,15 +84,18 @@ class _SearchScreenState extends State<SearchScreen> {
                                 backgroundColor:
                                     Theme.of(context).colorScheme.primary,
                                 label: TextButton(
-                                  onPressed: () async {
-                                    await followSomeone(users[index].id!)
-                                        .then((value) async {
-                                      if (value) {
-                                        await refresh();
-                                      }
-                                    });
-                                    setState(() {});
-                                  },
+                                  onPressed: followings.data!
+                                          .contains(users[index].id)
+                                      ? null
+                                      : () async {
+                                          await followSomeone(users[index].id!)
+                                              .then((value) async {
+                                            if (value) {
+                                              await refresh();
+                                            }
+                                          });
+                                          setState(() {});
+                                        },
                                   child: Text(
                                     followings.data!.contains(users[index].id)
                                         ? 'Following'
