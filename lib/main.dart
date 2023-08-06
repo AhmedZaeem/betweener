@@ -1,3 +1,4 @@
+import 'package:betweener/Screens/MainViews/profileView.dart';
 import 'package:betweener/Screens/Splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,6 +51,10 @@ class MyApp extends StatelessWidget {
           home: const Scaffold(
             body: Splash(),
           ),
+          initialRoute: '/',
+          routes: {
+            '/profile': (context) => const profileView(),
+          },
         );
       },
     );

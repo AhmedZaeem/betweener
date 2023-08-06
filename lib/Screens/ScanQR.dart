@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:betweener/Screens/MainViews/profileView.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -47,7 +48,17 @@ class _ScanQRState extends State<ScanQR> {
             final Uint8List? image = capture.image;
             for (final barcode in barcodes) {
               if (barcode.rawValue != null && mounted) {
-                await getUserByID(int.parse(barcode.rawValue), context);
+                await controller?.pauseCamera();
+                await getUserByID(int.parse(barcode.rawValue)).then((value) {
+                  if (value != null &&
+                      ModalRoute.of(context)?.settings.name != '/profile') {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                profileView(anotherUser: value)));
+                  }
+                });
               }
             }
           })

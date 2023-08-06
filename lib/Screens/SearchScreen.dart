@@ -1,3 +1,5 @@
+import 'package:betweener/Controllers/getUserController.dart';
+import 'package:betweener/Screens/MainViews/profileView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -64,30 +66,43 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(users[index].name!),
-                          trailing: Chip(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              label: TextButton(
-                                onPressed: () async {
-                                  await followSomeone(users[index].id!)
-                                      .then((value) async {
-                                    if (value) {
-                                      await refresh();
-                                    }
-                                  });
-                                  setState(() {});
-                                },
-                                child: Text(
-                                  followings.data!.contains(users[index].id)
-                                      ? 'Following'
-                                      : 'Follow',
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                        return InkWell(
+                          onTap: () async {
+                            await getUserByID(users[index].id!).then((value) {
+                              if (value != null) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => profileView(
+                                            anotherUser: users[index])));
+                              }
+                            });
+                          },
+                          child: ListTile(
+                            title: Text(users[index].name!),
+                            trailing: Chip(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                label: TextButton(
+                                  onPressed: () async {
+                                    await followSomeone(users[index].id!)
+                                        .then((value) async {
+                                      if (value) {
+                                        await refresh();
+                                      }
+                                    });
+                                    setState(() {});
+                                  },
+                                  child: Text(
+                                    followings.data!.contains(users[index].id)
+                                        ? 'Following'
+                                        : 'Follow',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                              )),
+                                )),
+                          ),
                         );
                       },
                       separatorBuilder: (context, index) {

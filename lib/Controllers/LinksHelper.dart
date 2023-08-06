@@ -71,3 +71,21 @@ Future<bool> editLink(Map<String, dynamic> body, int linkID) async {
   }
   return false;
 }
+
+Future<List<Link>> fetchUserLinks(int id) async {
+  final token = await CachedController().getData(sharedPrefKeys.token);
+
+  final response = await http.get(
+    Uri.parse('$apiLink/users/$id'),
+    headers: {'Authorization': 'Bearer $token'},
+  );
+
+  if (response.statusCode == 200) {
+    List<Link> links =
+        linkFromJson(jsonEncode(jsonDecode(response.body)['user']['links']));
+
+    return links;
+  } else {
+    throw Exception('Failed to load user links');
+  }
+}
