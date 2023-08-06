@@ -181,6 +181,7 @@ class _RegisterState extends State<Register> with NavigatorHelper {
         'password': _passwordController.text,
         'password_confirmation': _passwordController.text,
       }).then((value) async {
+        setState(() => loading = false);
         if (value == null) {
           CoolAlert.show(
             backgroundColor: Colors.white,
@@ -200,6 +201,7 @@ class _RegisterState extends State<Register> with NavigatorHelper {
           }
         }
       });
+      setState(() => loading = false);
     }
   }
 }

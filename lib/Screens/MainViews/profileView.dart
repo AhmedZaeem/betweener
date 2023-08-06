@@ -6,6 +6,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Controllers/CachedController.dart';
 import '../../Controllers/LinksHelper.dart';
@@ -184,126 +185,147 @@ class _profileViewState extends State<profileView> {
                                 return Padding(
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 38.w),
-                                  child: Slidable(
-                                    enabled: true,
-                                    endActionPane: widget.anotherUser == null
-                                        ? ActionPane(
-                                            motion: const StretchMotion(),
-                                            extentRatio: .5,
-                                            children: [
-                                              SlidableAction(
-                                                onPressed: (context) {},
-                                                backgroundColor: Colors.white,
-                                                flex: 1,
-                                                icon: Icons.abc,
-                                                foregroundColor: Colors.white,
-                                              ),
-                                              SlidableAction(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.r),
-                                                flex: 4,
-                                                onPressed: (context) async {
-                                                  await Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) => AddLink(
-                                                              linkToEdit: snapshot
-                                                                      .data![
-                                                                  index]))).then(
-                                                      (value) {
-                                                    if (value) {
-                                                      refreshScreen();
-                                                    }
-                                                  });
-                                                  refreshScreen();
-                                                },
-                                                backgroundColor:
-                                                    const Color(0xffFFD465),
-                                                foregroundColor: Colors.white,
-                                                icon: Icons.edit,
-                                              ),
-                                              SlidableAction(
-                                                onPressed: (context) {},
-                                                backgroundColor: Colors.white,
-                                                flex: 1,
-                                                icon: Icons.abc,
-                                                foregroundColor: Colors.white,
-                                              ),
-                                              SlidableAction(
-                                                flex: 4,
-                                                onPressed: (context) async {
-                                                  await CoolAlert.show(
-                                                    context: context,
-                                                    type: CoolAlertType.confirm,
-                                                    showCancelBtn: true,
-                                                    backgroundColor: Colors.red,
-                                                    onConfirmBtnTap: () async {
-                                                      var x = await deleteLink(
-                                                          snapshot.data![index]
-                                                              .id!);
-                                                      if (x && mounted) {
-                                                        CoolAlert.show(
-                                                          context: context,
-                                                          type: CoolAlertType
-                                                              .success,
-                                                          text:
-                                                              'Link was deleted successfully',
-                                                          title: 'Successful',
-                                                        ).then((value) =>
-                                                            refreshScreen());
+                                  child: InkWell(
+                                    onTap: () async {
+                                      await _launchURL(
+                                          snapshot.data![index].link!);
+                                    },
+                                    child: Slidable(
+                                      enabled: true,
+                                      endActionPane: widget.anotherUser == null
+                                          ? ActionPane(
+                                              motion: const StretchMotion(),
+                                              extentRatio: .5,
+                                              children: [
+                                                SlidableAction(
+                                                  onPressed: (context) {},
+                                                  backgroundColor: Colors.white,
+                                                  flex: 1,
+                                                  icon: Icons.abc,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                SlidableAction(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.r),
+                                                  flex: 4,
+                                                  onPressed: (context) async {
+                                                    await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => AddLink(
+                                                                linkToEdit: snapshot
+                                                                        .data![
+                                                                    index]))).then(
+                                                        (value) {
+                                                      if (value) {
+                                                        refreshScreen();
                                                       }
-                                                    },
-                                                    title: 'Delete ',
-                                                    text:
-                                                        'Are you sure you want to delete this link?',
-                                                  );
-                                                  refreshScreen();
-                                                },
-                                                backgroundColor:
-                                                    const Color(0xFFF56C61),
-                                                foregroundColor: Colors.white,
-                                                icon: Icons.delete,
-                                                borderRadius:
-                                                    BorderRadius.circular(12.r),
+                                                    });
+                                                    refreshScreen();
+                                                  },
+                                                  backgroundColor:
+                                                      const Color(0xffFFD465),
+                                                  foregroundColor: Colors.white,
+                                                  icon: Icons.edit,
+                                                ),
+                                                SlidableAction(
+                                                  onPressed: (context) {},
+                                                  backgroundColor: Colors.white,
+                                                  flex: 1,
+                                                  icon: Icons.abc,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                SlidableAction(
+                                                  flex: 4,
+                                                  onPressed: (context) async {
+                                                    await CoolAlert.show(
+                                                      context: context,
+                                                      type:
+                                                          CoolAlertType.confirm,
+                                                      showCancelBtn: true,
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                      onConfirmBtnTap:
+                                                          () async {
+                                                        var x =
+                                                            await deleteLink(
+                                                                snapshot
+                                                                    .data![
+                                                                        index]
+                                                                    .id!);
+                                                        if (x && mounted) {
+                                                          CoolAlert.show(
+                                                            context: context,
+                                                            type: CoolAlertType
+                                                                .success,
+                                                            text:
+                                                                'Link was deleted successfully',
+                                                            title: 'Successful',
+                                                          ).then((value) =>
+                                                              refreshScreen());
+                                                        }
+                                                      },
+                                                      title: 'Delete ',
+                                                      text:
+                                                          'Are you sure you want to delete this link?',
+                                                    );
+                                                    refreshScreen();
+                                                  },
+                                                  backgroundColor:
+                                                      const Color(0xFFF56C61),
+                                                  foregroundColor: Colors.white,
+                                                  icon: Icons.delete,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.r),
+                                                ),
+                                              ],
+                                            )
+                                          : null,
+                                      child: InkWell(
+                                        onTap: () async {
+                                          final Uri url = Uri.parse(
+                                              snapshot.data![index].link!);
+                                          await launchUrl(url);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: index % 2 == 0
+                                                ? const Color(0xffFEE2E7)
+                                                : const Color(0xffE7E5F1),
+                                            borderRadius:
+                                                BorderRadius.circular(12.r),
+                                          ),
+                                          width: double.infinity,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 13.w, vertical: 11.h),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                snapshot.data![index].title!,
+                                                style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  letterSpacing: 3,
+                                                  color: index % 2 == 0
+                                                      ? const Color(0xff783341)
+                                                      : const Color(0xff2D2B4E),
+                                                ),
+                                              ),
+                                              Text(
+                                                snapshot.data![index].link!,
+                                                style: TextStyle(
+                                                  color: index % 2 == 0
+                                                      ? const Color(0xff9B6A73)
+                                                      : const Color(0xff807D99),
+                                                  fontSize: 14.sp,
+                                                ),
                                               ),
                                             ],
-                                          )
-                                        : null,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: index % 2 == 0
-                                            ? const Color(0xffFEE2E7)
-                                            : const Color(0xffE7E5F1),
-                                        borderRadius:
-                                            BorderRadius.circular(12.r),
-                                      ),
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 13.w, vertical: 11.h),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            snapshot.data![index].title!,
-                                            style: TextStyle(
-                                              fontSize: 14.sp,
-                                              letterSpacing: 3,
-                                              color: index % 2 == 0
-                                                  ? const Color(0xff783341)
-                                                  : const Color(0xff2D2B4E),
-                                            ),
                                           ),
-                                          Text(
-                                            snapshot.data![index].link!,
-                                            style: TextStyle(
-                                              color: index % 2 == 0
-                                                  ? const Color(0xff9B6A73)
-                                                  : const Color(0xff807D99),
-                                              fontSize: 14.sp,
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -337,5 +359,13 @@ class _profileViewState extends State<profileView> {
     user = getUser();
     userLinks = getUserLinks();
     setState(() {});
+  }
+
+  _launchURL(url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

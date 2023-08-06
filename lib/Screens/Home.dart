@@ -1,9 +1,12 @@
+import 'package:betweener/Controllers/CachedController.dart';
 import 'package:betweener/Helpers/NavigatorHelper.dart';
 import 'package:betweener/Screens/MainViews/MainView.dart';
 import 'package:betweener/Screens/MainViews/activeSharingView.dart';
 import 'package:betweener/Screens/MainViews/profileView.dart';
 import 'package:betweener/Screens/ScanQR.dart';
 import 'package:betweener/Screens/SearchScreen.dart';
+import 'package:betweener/Screens/auth/Login.dart';
+import 'package:betweener/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,6 +28,19 @@ class _HomeState extends State<Home> with NavigatorHelper {
           ? AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
+              leading: IconButton(
+                  icon: const Icon(
+                    Icons.logout,
+                    color: Colors.black,
+                  ),
+                  onPressed: () async {
+                    var controller = CachedController();
+                    await controller.setData(sharedPrefKeys.user, null);
+                    await controller.setData(sharedPrefKeys.token, null);
+                    if (mounted) {
+                      jump(context, const Login(), replace: true);
+                    }
+                  }),
               actions: [
                 IconButton(
                   icon: Icon(
